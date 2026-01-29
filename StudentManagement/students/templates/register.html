@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block back_button %}{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                <h2 class="card-title text-center mb-3">Sign Up</h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {{ form.non_field_errors }}
+                    {{ form.as_p }}
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </div>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    Already have an account?
+                    <a href="{% url 'login' %}">Login</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

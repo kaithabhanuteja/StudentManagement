@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Teacher Dashboard</h2>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% else %}
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6>My Students</h6>
+                <h2>{{ students_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6>Total Attendance</h6>
+                <h2>{{ total_classes }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h6>Present</h6>
+                <h2>{{ present }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-dark text-white">
+            <div class="card-body">
+                <h6>Today</h6>
+                <h2>{{ today_attendance }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="mb-4">
+    <a href="{% url 'mark_attendance' %}" class="btn btn-primary me-2">
+        Mark Attendance
+    </a>
+    <a href="{% url 'my_students' %}" class="btn btn-outline-secondary">
+        View My Students
+    </a>
+</div>
+
+<h4>My Students</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Course</th>
+    </tr>
+
+    {% for s in students %}
+    <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.course }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3" class="text-center">No students assigned</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endif %}
+{% endblock %}

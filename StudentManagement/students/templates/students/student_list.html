@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="mb-3">Students</h2>
+
+<a href="{% url 'add_student' %}" class="btn btn-primary mb-3">Add Student</a>
+
+<!-- Search Form -->
+<form method="GET" class="row mb-3">
+    <div class="col-md-6">
+        <input type="text" name="q" class="form-control" placeholder="Search by name, email or course"
+            value="{{ query|default:'' }}">
+    </div>
+
+    <div class="col-md-3">
+        <button class="btn btn-secondary w-100" type="submit">
+            Search
+        </button>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{% url 'student_list' %}" class="btn btn-outline-dark w-100">
+            Clear
+        </a>
+    </div>
+</form>
+
+<!-- Students Table -->
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for s in page_obj %}
+    <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.age }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.course }}</td>
+        <td>
+            <a href="{% url 'edit_student' s.id %}" class="btn btn-warning btn-sm">
+                Edit
+            </a>
+
+            <!-- Delete Button -->
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ s.id }}">
+                Delete
+            </button>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal{{ s.id }}" tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Delete</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            Are you sure you want to delete
+                            <strong>{{ s.name }}</strong>?
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+
+                            <!-- POST Delete (SECURE) -->
+                            <form method="POST" action="{% url 'delete_student' s.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">
+                                    Yes, Delete
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5" class="text-center">
+            No students found.
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                Previous
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">
+                {{ num }}
+            </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                Next
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+{% endblock %}
